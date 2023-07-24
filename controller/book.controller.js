@@ -68,8 +68,28 @@ const updateBook = (req, res) =>{
     }
 }
 
+// delete a book
+const deleteBook = (req, res)=>{
+    try{
+        const {id} = req.params;
+        const query = 'DELETE FROM books WHERE id=?';
+        pool.query(query, [id], (err, result)=> {
+            if (err) {
+                res.status(500).json({status: false, error: err.message });
+            } else {
+                res.status(200).json({ status: true, data: result });
+            }
+        })
+    }catch {
+        res.status(500).json({
+            status: false,
+            message: "There was a server side error"
+          })
+    }
+}
 module.exports = {
   saveBookWithUserRelation,
   getAllBooks,
-  updateBook
+  updateBook,
+  deleteBook
 };
