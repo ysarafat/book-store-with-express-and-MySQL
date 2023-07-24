@@ -5,6 +5,7 @@ const createTableQuery = require('./model/user.model');
 const createBooksTableQuery = require('./model/book.modle');
 const userRoutes = require('./routers/user.router')
 const bookRoutes = require('./routers/book.router')
+require('dotenv').config()
 const app = express();
 const PORT = 5000;
 
