@@ -24,25 +24,52 @@ const saveBookWithUserRelation = async (req, res) => {
 };
 
 // get all book 
-
 const getAllBooks = (req, res) => {
     try{
         const query = `SELECT books.*, users.name AS user_name, users.email AS user_email FROM books INNER JOIN users ON books.user = users.id`;
         pool.query(query, (err, results) => {
             if (err) {
-                res.status(500).json({ error: err.message });
+                res.status(500).json({status: false, error: err.message });
             } else {
-                res.status(200).json({ message: 'Book get successfully',data: results });
+                res.status(200).json({ status: true,data: results });
             }
         })
 
     } catch  (err) {
-        res.json({
-            message: `${err.message}` 
+        res.status(500).json({
+            status: false,
+            message: "There was a server side error"
           })
       }
 }
+
+// update a book
+const updateBook = (req, res) =>{
+    try{
+        const {id} = req.params;
+        const { title, price, description, author, rating, release_date } = req.body;
+        const query = `
+          UPDATE books
+          SET title = ?, price = ?, description = ?, author = ?, rating = ?, release_date = ?
+          WHERE id = ? 
+    `;
+        pool.query(query, [title, price, description, author, rating, release_date, id], (err, result) => {
+            if (err) {
+                res.status(500).json({status: false, error: err.message });
+            } else {
+                res.status(200).json({ status: true, data: result });
+            }
+        })
+    } catch (err) {
+        res.status(500).json({
+            status: false,
+            message: "There was a server side error"
+          })
+    }
+}
+
 module.exports = {
   saveBookWithUserRelation,
-  getAllBooks
+  getAllBooks,
+  updateBook
 };
